@@ -1,5 +1,5 @@
 # Docker
-- task: Kubernetes@1
+- task: Kubernetes1
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'dev-demomicroservices-cicd-1581044840146'
