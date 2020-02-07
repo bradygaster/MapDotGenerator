@@ -11,6 +11,7 @@ variables:
   containerRegistry: 'ondotnet.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: 'dev'
+  kubernetesServiceEndpoint: 'dev-demomicroservices-cicd-1581044840146'
   
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -39,7 +40,7 @@ stages:
     - task: Kubernetes@1
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'dev-demomicroservices-cicd-1581044840146'
+        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
         namespace: 'cicd'
         command: 'delete'
         arguments: 'deployment mapdotgenerator'
@@ -48,7 +49,7 @@ stages:
     - task: Kubernetes@1
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'dev-demomicroservices-cicd-1581044840146'
+        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
         namespace: 'cicd'
         command: 'apply'
         arguments: '-f k8s.yaml'
