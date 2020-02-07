@@ -42,8 +42,8 @@ stages:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
         namespace: 'cicd'
-        command: 'delete deployment'
-        arguments: 'mapdotgenerator'
+        command: 'delete'
+        arguments: 'deployment mapdotgenerator'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
     - task: Kubernetes@1
