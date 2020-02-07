@@ -42,4 +42,4 @@ stages:
         action: 'deploy'
         kubernetesServiceConnection: 'dev-demomicroservices-cicd-1581044840146'
         namespace: 'cicd'
-        manifests: 'ondotnet.azurecr.io/mapdotgenerator:bradyg'
+        manifests: 'k8s.yaml'
