@@ -37,22 +37,9 @@ stages:
     - task: KubectlInstaller@0
       inputs:
         kubectlVersion: 'latest'
-    - task: Kubernetes@1
-      continueOnError: true
+    - task: KubernetesManifest@0
       inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
+        action: 'deploy'
+        kubernetesServiceConnection: 'dev-demomicroservices-cicd-1581044840146'
         namespace: 'cicd'
-        command: 'delete'
-        arguments: '-f k8s.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
-        namespace: 'cicd'
-        command: 'apply'
-        arguments: '-f k8s.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
+        manifests: 'ondotnet.azurecr.io/mapdotgenerator:bradyg'
