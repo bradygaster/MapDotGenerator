@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using static Bogus.DataSets.Name;
@@ -14,10 +15,36 @@ namespace MapDotGenerator
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private HubConnection _hubConnection;
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
+        }
+        
+        private async Task StartConnectionAsync()
+        {
+            try
+            {
+                _hubConnection = new HubConnectionBuilder()  
+                    .WithUrl(new Uri("https://localhost:5001/maphub"))
+                    .Build();
+
+                _hubConnection.Closed += async (ex) => { await StartConnectionAsync(); };
+
+                await _hubConnection.StartAsync();
+            }
+            catch
+            {
+                _logger.LogError("SignalR endpoint can't be reached");
+            }
+        }
+
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await StartConnectionAsync();
+                
+            await base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -26,13 +53,20 @@ namespace MapDotGenerator
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                RunSample();
+                if(_hubConnection != null && _hubConnection.State == HubConnectionState.Connected)
+                {
+                    GenerateMapPoint();
+                }
+                else
+                {
+                    await StartConnectionAsync();
+                }
 
                 await Task.Delay(5000, stoppingToken);
             }
         }
 
-        void RunSample()
+        void GenerateMapPoint()
         {
             var testUsers = new Faker<User>()
                 .RuleFor(u => u.Gender, f => f.PickRandom<Gender>())
@@ -41,10 +75,11 @@ namespace MapDotGenerator
                 .RuleFor(u => u.Longitude, (f, u) => f.Address.Longitude(-122.7553483, -121.881312))
                 .FinishWith((f, u) =>
                 {
+                    _hubConnection.SendAsync("ReceiveLocation", u.Name, u.Latitude, u.Longitude);
                     Console.WriteLine(u.AsJson());
                 });
 
-            var user = testUsers.Generate(10);
+            var user = testUsers.Generate(1);
         }
     }
 }
