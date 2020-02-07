@@ -38,6 +38,7 @@ stages:
       inputs:
         kubectlVersion: 'latest'
     - task: Kubernetes@1
+      continueOnError: true
       inputs:
         connectionType: 'Kubernetes Service Connection'
         kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
