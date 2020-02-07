@@ -43,7 +43,7 @@ stages:
         kubernetesServiceEndpoint: $(kubernetesServiceEndpoint)
         namespace: 'cicd'
         command: 'delete'
-        arguments: 'mapdotgenerator'
+        arguments: '-f k8s.yaml'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
     - task: Kubernetes@1
