@@ -14,7 +14,7 @@ variables:
   imageRepository: 'mapdotgenerator'
   containerRegistry: 'ondotnet.azurecr.io'
   dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
+  tag: 'dev'
   
   # Agent VM image name
   vmImageName: 'ubuntu-latest'

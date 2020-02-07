@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapdotgenerator
+spec:
+  selector:
+    matchLabels:
+      app: mapdotgenerator
+  template:
+    metadata:
+      labels:
+        app: mapdotgenerator
+    spec:
+      containers:
+      - name: mapdotgenerator
+        image: ondotnet.azurecr.io/mapdotgenerator:dev
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
