@@ -6,8 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using static Bogus.DataSets.Name;
 
 namespace MapDotGenerator
@@ -15,11 +17,16 @@ namespace MapDotGenerator
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly string _hubUrl;
         private HubConnection _hubConnection;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger,
+            IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
+            _hubUrl = _configuration.GetValue<string>("MapHubUrl");
         }
         
         private async Task StartConnectionAsync()
@@ -27,7 +34,7 @@ namespace MapDotGenerator
             try
             {
                 _hubConnection = new HubConnectionBuilder()  
-                    .WithUrl(new Uri("https://localhost:5001/maphub"))
+                    .WithUrl(new Uri(_hubUrl))
                     .Build();
 
                 _hubConnection.Closed += async (ex) => { await StartConnectionAsync(); };
