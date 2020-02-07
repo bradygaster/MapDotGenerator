@@ -33,3 +33,15 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+    - task: KubectlInstaller@0
+      inputs:
+        kubectlVersion: 'latest'
+    - task: Kubernetes@1
+      inputs:
+        connectionType: 'Kubernetes Service Connection'
+        kubernetesServiceEndpoint: 'dev-demomicroservices-cicd-1581044840146'
+        namespace: 'cicd'
+        command: 'apply'
+        arguments: '-f k8s.yaml'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
