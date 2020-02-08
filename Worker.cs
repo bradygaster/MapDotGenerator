@@ -33,6 +33,8 @@ namespace MapDotGenerator
         {
             try
             {
+                _logger.LogInformation($"Trying to access hub at {_hubUrl}");
+
                 _hubConnection = new HubConnectionBuilder()  
                     .WithUrl(new Uri(_hubUrl))
                     .Build();
@@ -43,7 +45,7 @@ namespace MapDotGenerator
             }
             catch
             {
-                _logger.LogError("SignalR endpoint can't be reached");
+                _logger.LogError($"Hub cannot be reached at {_hubUrl}");
             }
         }
 
@@ -69,7 +71,7 @@ namespace MapDotGenerator
                     await StartConnectionAsync();
                 }
 
-                await Task.Delay(5000, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
         }
 

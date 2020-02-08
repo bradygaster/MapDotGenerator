@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: mapdotgenerator
-        image: ondotnet.azurecr.io/mapdotgenerator:latest
+        image: <your-registry-prefix>.azurecr.io/mapdotgenerator:latest
         resources:
           limits:
             memory: "128Mi"
